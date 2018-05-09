@@ -39,7 +39,7 @@ namespace parkingApp
 
         public void PickUpTheCar(Car car)
         {
-            if (!(car == null) && _cars.Count() <= _parkingSpace)
+            if (!(car == null) && _cars.Count() < _parkingSpace)
             {
                 _cars.Add(car);
             }
