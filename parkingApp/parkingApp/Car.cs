@@ -35,11 +35,15 @@ namespace parkingApp
 
             while (amount <= 0)
             {
-                Console.Write("Введите сумму для пополнения:");
+                Console.Write("Enter amount to replenish (enter \"x\" to cancel):");
                 inputString = Console.ReadLine();
+                if(inputString.ToLower() == "x")
+                {
+                    break;
+                }
                 if (!int.TryParse(inputString, out amount) || amount <= 0)
                 {
-                    Console.WriteLine("Ошибка! Некорректный ввод. Введите числовое значение больше 0!");
+                    Console.WriteLine("Error! Invalid input. The text you enter must be an integer value greater than 0");
                 }
                 this.Balance += amount;
             }
