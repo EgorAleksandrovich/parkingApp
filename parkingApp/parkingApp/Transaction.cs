@@ -8,7 +8,7 @@ namespace parkingApp
 {
     public class Transaction
     {
-        public int CarId { get; set; }
+        public string CarId { get; set; }
         public int WriteOffs { get; set; }
         public DateTime TransactionTime { get; set; }
     }
