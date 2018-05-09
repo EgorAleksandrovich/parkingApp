@@ -12,6 +12,7 @@ namespace parkingApp
         private List<Transaction> _transaction;
         private int _parkingSpace;
         private int _fine;
+        private Dictionary<string, int> _parkingPrice;
 
         private int Balance { get; set; }
         private static readonly Lazy<Parking> lazy = new Lazy<Parking>(() => new Parking());
@@ -22,6 +23,7 @@ namespace parkingApp
             _transaction = new List<Transaction>();
             _parkingSpace = Settings.ParkingSpace;
             _fine = Settings.Fine;
+            _parkingPrice = Settings.ParkingPrice;
         }
 
         public static Parking GetInstance()
@@ -37,18 +39,38 @@ namespace parkingApp
             }
         }
 
-        public void PickUpTheCar(Car car)
+        public void PickUpTheCar(string carId)
         {
-            if (!(car == null) && _cars.Count() < _parkingSpace)
+            Car car = _cars.FirstOrDefault(c => c.Id == carId);
+            if(car.Balance<0)
             {
-                _cars.Add(car);
+                while(car.Balance >)
             }
+
         }
 
         public void ShowParkingSpace()
         {
             int freeParkingSpace = _parkingSpace - _cars.Count();
-            Console.WriteLine(string.Format("Available number of space {0}, open spaces {1}.", freeParkingSpace, _cars.Count()));
+            Console.WriteLine(string.Format("Available number of space {0}, busy spaces {1}.", freeParkingSpace, _cars.Count()));
+        }
+
+        public void Withdraw()
+        {
+            int amount = 0;
+            if (_cars != null)
+            {
+                foreach (var car in _cars)
+                {
+                    amount = _parkingPrice[car.CarType.ToString()];
+                    if (car.Balance < 0)
+                    {
+                        amount *= _fine;
+                    }
+                    car.Balance -= amount;
+                    _transaction.Add(new Transaction { CarId = car.Id, TransactionTime = DateTime.Now, WriteOffs = _parkingPrice[car.CarType.ToString()] });
+                }
+            }
         }
     }
 }
