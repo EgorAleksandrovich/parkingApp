@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace parkingApp
 {
-    public enum TypeOfCarIs { Bus = 2, Truck = 5, Motorcycle = 1, Passenger = 3 };
+    public enum CarType { Bus = 2, Truck = 5, Motorcycle = 1, Passenger = 3 };
 }

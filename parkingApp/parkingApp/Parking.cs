@@ -37,10 +37,18 @@ namespace parkingApp
             }
         }
 
-        public void ShowFreeParkingSpace()
+        public void PickUpTheCar(Car car)
+        {
+            if (!(car == null) && _cars.Count() <= _parkingSpace)
+            {
+                _cars.Add(car);
+            }
+        }
+
+        public void ShowParkingSpace()
         {
             int freeParkingSpace = _parkingSpace - _cars.Count();
-            Console.WriteLine(string.Format("Свободных мест на парковке: {0}", freeParkingSpace));
+            Console.WriteLine(string.Format("Количество свободных мест/занятых мест на парковке: {0}", freeParkingSpace, _cars.Count()));
         }
     }
 }

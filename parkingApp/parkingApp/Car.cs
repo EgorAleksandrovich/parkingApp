@@ -11,7 +11,7 @@ namespace parkingApp
         private int _balance = 0;
 
         public string Id { get; set; }
-        public TypeOfCarIs TypeOfCar { get; set; }
+        public CarType CarType { get; set; }
         public int Balance
         {
             get
@@ -39,7 +39,7 @@ namespace parkingApp
                 inputString = Console.ReadLine();
                 if (!int.TryParse(inputString, out amount) || amount <= 0)
                 {
-                    Console.WriteLine("Ошибка! Не корректный ввод. Введите числовое значение больше 0!");
+                    Console.WriteLine("Ошибка! Некорректный ввод. Введите числовое значение больше 0!");
                 }
                 this.Balance += amount;
             }
