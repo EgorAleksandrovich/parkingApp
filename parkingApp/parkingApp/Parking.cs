@@ -48,7 +48,7 @@ namespace parkingApp
         public void ShowParkingSpace()
         {
             int freeParkingSpace = _parkingSpace - _cars.Count();
-            Console.WriteLine(string.Format("Количество свободных мест/занятых мест на парковке: {0}", freeParkingSpace, _cars.Count()));
+            Console.WriteLine(string.Format("Available number of space {0}, open spaces {1}.", freeParkingSpace, _cars.Count()));
         }
     }
 }
