@@ -39,14 +39,61 @@ namespace parkingApp
             }
         }
 
-        public void PickUpTheCar(string carId)
+        public void PickUpTheCar()
         {
-            Car car = _cars.FirstOrDefault(c => c.Id == carId);
-            if(car.Balance<0)
-            {
-                while(car.Balance >)
-            }
+            Car outgoingСar = FindCar();
+            bool canseledAction = false;
 
+            if (outgoingСar == null)
+            {
+                return;
+            }
+            else
+            {
+                while (outgoingСar.Balance < 0)
+                {
+                    canseledAction = LoanPayment(outgoingСar);
+                    if (canseledAction)
+                    {
+                        break;
+                    }
+                }
+            }
+            _cars.Remove(outgoingСar);
+        }
+
+        private Car FindCar()
+        {
+            string inputString = string.Empty;
+            Car outgoingСar = null;
+            do
+            {
+                Console.Write("Enter your id (enter \"x\" to cancel): ");
+                inputString = Console.ReadLine().ToLower();
+                if (inputString == "x")
+                {
+                    break;
+                }
+                else
+                {
+                    outgoingСar = _cars.FirstOrDefault(c => c.Id == inputString);
+                    if (outgoingСar == null)
+                    {
+                        Console.WriteLine(string.Format("Car with id {0} not found, please check the correctness of the input id.", inputString));
+                    }
+                }
+            } while (outgoingСar == null);
+
+            return outgoingСar;
+        }
+
+        private bool LoanPayment(Car outgoingСar)
+        {
+            bool cansalesAction = false;
+            int requiredAmount = outgoingСar.Balance * -1;
+            Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}", outgoingСar.Balance, requiredAmount));
+            cansalesAction =  outgoingСar.ReplenishAccount();
+            return cansalesAction;
         }
 
         public void ShowParkingSpace()
