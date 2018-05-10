@@ -8,22 +8,24 @@ namespace parkingApp
 {
     public sealed class Parking
     {
+        private static readonly Lazy<Parking> lazy = new Lazy<Parking>(() => new Parking());
         private List<Car> _cars;
-        private List<Transaction> _transaction;
+        private List<Transaction> _transactions;
         private int _parkingSpace;
         private int _fine;
         private Dictionary<string, int> _parkingPrice;
+        private int _timeout;
 
         private int Balance { get; set; }
-        private static readonly Lazy<Parking> lazy = new Lazy<Parking>(() => new Parking());
 
         private Parking()
         {
             _cars = new List<Car>();
-            _transaction = new List<Transaction>();
+            _transactions = new List<Transaction>();
             _parkingSpace = Settings.ParkingSpace;
             _fine = Settings.Fine;
             _parkingPrice = Settings.ParkingPrice;
+            _timeout = Settings.Timeout;
         }
 
         public static Parking GetInstance()
@@ -115,9 +117,21 @@ namespace parkingApp
                         amount *= _fine;
                     }
                     car.Balance -= amount;
-                    _transaction.Add(new Transaction { CarId = car.Id, TransactionTime = DateTime.Now, WriteOffs = _parkingPrice[car.CarType.ToString()] });
+                    _transactions.Add(new Transaction { CarId = car.Id, TransactionTime = DateTime.Now, WriteOffs = _parkingPrice[car.CarType.ToString()] });
                 }
             }
+        }
+        
+        public void DysplayTransaction()
+        {
+            TableHelper.PrintLine();
+            TableHelper.PrintRow("Transatction time", "Car Id", "Withdraw");
+            TableHelper.PrintLine();
+            foreach(Transaction transaction in _transactions)
+            {
+                TableHelper.PrintRow(transaction.TransactionTime.ToString(), transaction.CarId, Convert.ToString(transaction.WriteOffs));
+            }
+            TableHelper.PrintLine();
         }
     }
 }
