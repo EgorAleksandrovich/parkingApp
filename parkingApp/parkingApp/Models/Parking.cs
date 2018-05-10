@@ -14,8 +14,9 @@ namespace parkingApp
         private List<Transaction> _transactions;
         private int _parkingSpace;
         private int _fine;
-        private Dictionary<string, int> _parkingPrice;
-        private Timer _timeout;
+        private Dictionary<CarType, int> _parkingPrice;
+        private int _timeout;
+        private Timer _timer;
 
         private int Balance { get; set; }
 
@@ -27,7 +28,10 @@ namespace parkingApp
             _fine = Settings.Fine;
             _parkingPrice = Settings.ParkingPrice;
             _timeout = Settings.Timeout;
-            _timeout.Elapsed += Withdraw1;
+            _timer = new Timer();
+            _timer.Interval = _timeout;
+            _timer.Enabled = true;
+            _timer.Elapsed += Withdraw;
         }
 
         public static Parking GetInstance()
@@ -114,7 +118,7 @@ namespace parkingApp
             {
                 foreach (var car in _cars)
                 {
-                    amount = _parkingPrice[car.CarType.ToString()];
+                    amount = _parkingPrice[car.CarType];
                     if (car.Balance < 0)
                     {
                         amount *= _fine;
@@ -122,17 +126,10 @@ namespace parkingApp
                     car.Balance -= amount;
                     _transactions.Add(new Transaction { CarId = car.Id, 
                         TransactionTime = DateTime.Now, 
-                        WriteOffs = _parkingPrice[car.CarType.ToString()] });
+                        WriteOffs = _parkingPrice[car.CarType] });
                 }
             }
         }
-
-
-        private void Withdraw1(object sender, ElapsedEventArgs e)
-        {
-            Console.WriteLine("Method are calld at {0}", e.SignalTime);
-        }
-
 
         public void DysplayTransaction()
         {
