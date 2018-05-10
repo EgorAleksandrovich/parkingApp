@@ -8,24 +8,9 @@ namespace parkingApp
 {
     public class Car
     {
-        private int _balance = 0;
-
         public string Id { get; set; }
         public CarType CarType { get; set; }
-        public int Balance
-        {
-            get
-            {
-                return _balance;
-            }
-            set
-            {
-                if (value > 0)
-                {
-                    _balance = value;
-                }
-            }
-        }
+        public int Balance { get; set; }
 
 
         public void ReplenishAccount()
@@ -35,7 +20,7 @@ namespace parkingApp
 
             while (amount <= 0)
             {
-                Console.Write("Enter amount to replenish (enter \"x\" to cancel):");
+                Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
                 inputString = Console.ReadLine();
                 if(inputString.ToLower() == "x")
                 {
