@@ -10,6 +10,7 @@ namespace parkingApp
     {
         private static int _parkingSpace = 100;
         private static int _fine = 2;
+        private static int _timeout = 3000;
         private static Dictionary<string,int> _parkingPrice = new Dictionary<string,int>
         {
             {"Truck", 5},
@@ -21,5 +22,6 @@ namespace parkingApp
         public static Dictionary<string, int> ParkingPrice { get { return _parkingPrice; } }
         public static int ParkingSpace { get { return _parkingSpace; } }
         public static int Fine { get { return _fine; } }
+        public static int Timeout { get { return _timeout; } }
     }
 }
