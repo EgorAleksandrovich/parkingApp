@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace parkingApp
 {
@@ -14,7 +15,7 @@ namespace parkingApp
         private int _parkingSpace;
         private int _fine;
         private Dictionary<string, int> _parkingPrice;
-        private int _timeout;
+        private Timer _timeout;
 
         private int Balance { get; set; }
 
@@ -26,6 +27,7 @@ namespace parkingApp
             _fine = Settings.Fine;
             _parkingPrice = Settings.ParkingPrice;
             _timeout = Settings.Timeout;
+            _timeout.Elapsed += Withdraw1;
         }
 
         public static Parking GetInstance()
@@ -93,8 +95,9 @@ namespace parkingApp
         {
             bool cansalesAction = false;
             int requiredAmount = outgoingСar.Balance * -1;
-            Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}", outgoingСar.Balance, requiredAmount));
-            cansalesAction =  outgoingСar.ReplenishAccount();
+            Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}",
+            outgoingСar.Balance, requiredAmount));
+            cansalesAction = outgoingСar.ReplenishAccount();
             return cansalesAction;
         }
 
@@ -104,7 +107,7 @@ namespace parkingApp
             Console.WriteLine(string.Format("Available number of space {0}, busy spaces {1}.", freeParkingSpace, _cars.Count()));
         }
 
-        public void Withdraw()
+        private void Withdraw(object sender, ElapsedEventArgs e)
         {
             int amount = 0;
             if (_cars != null)
@@ -117,17 +120,26 @@ namespace parkingApp
                         amount *= _fine;
                     }
                     car.Balance -= amount;
-                    _transactions.Add(new Transaction { CarId = car.Id, TransactionTime = DateTime.Now, WriteOffs = _parkingPrice[car.CarType.ToString()] });
+                    _transactions.Add(new Transaction { CarId = car.Id, 
+                        TransactionTime = DateTime.Now, 
+                        WriteOffs = _parkingPrice[car.CarType.ToString()] });
                 }
             }
         }
-        
+
+
+        private void Withdraw1(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("Method are calld at {0}", e.SignalTime);
+        }
+
+
         public void DysplayTransaction()
         {
             TableHelper.PrintLine();
             TableHelper.PrintRow("Transatction time", "Car Id", "Withdraw");
             TableHelper.PrintLine();
-            foreach(Transaction transaction in _transactions)
+            foreach (Transaction transaction in _transactions)
             {
                 TableHelper.PrintRow(transaction.TransactionTime.ToString(), transaction.CarId, Convert.ToString(transaction.WriteOffs));
             }
