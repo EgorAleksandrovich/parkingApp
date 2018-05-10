@@ -13,8 +13,9 @@ namespace parkingApp
         public int Balance { get; set; }
 
 
-        public void ReplenishAccount()
+        public bool ReplenishAccount()
         {
+            bool canseledAction = false;
             string inputString = null;
             int amount = 0;
 
@@ -24,6 +25,7 @@ namespace parkingApp
                 inputString = Console.ReadLine();
                 if(inputString.ToLower() == "x")
                 {
+                    canseledAction = true;
                     break;
                 }
                 if (!int.TryParse(inputString, out amount) || amount <= 0)
@@ -32,6 +34,7 @@ namespace parkingApp
                 }
                 this.Balance += amount;
             }
+            return canseledAction;
         }
     }
 }
