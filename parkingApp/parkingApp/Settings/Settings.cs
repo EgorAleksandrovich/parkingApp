@@ -11,19 +11,19 @@ namespace parkingApp
     {
         private static int _parkingSpace = 100;
         private static int _fine = 2;
-        //private static Timer _timeout = new Timer();
-        private static Dictionary<string,int> _parkingPrice = new Dictionary<string,int>
+        private static int _timeout = 3000;
+        private static Dictionary<CarType, int> _parkingPrice = new Dictionary<CarType, int>
         {
-            {"Truck", 5},
-            {"Passenger", 3},
-            {"Bus", 2},
-            {"Motorcycle", 1}
+            {CarType.Truck, 5},
+            {CarType.Passenger, 3},
+            {CarType.Bus, 2},
+            {CarType.Motorcycle, 1}
         };
 
-        public static Dictionary<string, int> ParkingPrice { get { return _parkingPrice; } }
+        public static Dictionary<CarType, int> ParkingPrice { get { return _parkingPrice; } }
         public static int ParkingSpace { get { return _parkingSpace; } }
         public static int Fine { get { return _fine; } }
         //public static Timer Timeout { get { return _timeout; } }
-        public static Timer Timeout { get; set { } }
+        public static int Timeout { get { return _timeout; } }
     }
 }
