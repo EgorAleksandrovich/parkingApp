@@ -37,36 +37,37 @@ namespace parkingApp
         public void StartMenu(Parking parking)
         {
             Console.Write(_textLineStartMenu);
-            while (_successfulInput == false & _inputString != "5")
-            try
-            {
-                _inputString = Console.ReadLine();
-                switch (_inputString)
+            while (_successfulInput == false)
+                try
                 {
-                    case "1":
-                        ParkingInfoMenu(parking);
-                        _successfulInput = true;
-                        break;
-                    case "2":
-                        ParkingPickUpTheCarMenu();
-                        _successfulInput = true;
-                        break;
-                    case "3":
-                        break;
-                    default:
-                        throw new ArgumentException();
+                    _inputString = Console.ReadLine();
+                    switch (_inputString)
+                    {
+                        case "1":
+                            ParkingInfoMenu(parking);
+                            _successfulInput = true;
+                            break;
+                        case "2":
+                            ParkingPickUpTheCarMenu(parking);
+                            _successfulInput = true;
+                            break;
+                        case "3":
+                            _successfulInput = true;
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
                 }
-            }
-            catch (ArgumentException)
-            {
-                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
-            }
+                catch (ArgumentException)
+                {
+                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                }
         }
 
         public void ParkingInfoMenu(Parking parking)
         {
             Console.Write(_textLineParkingInfoMenu);
-            while (_successfulInput == false & _inputString != "5")
+            while (_successfulInput == false)
             {
                 try
                 {
@@ -75,17 +76,22 @@ namespace parkingApp
                     {
                         case "1":
                             DysplayParkingSpace(parking);
+                            _successfulInput = true;
                             break;
                         case "2":
                             DysplayParkingBalance(parking);
+                            _successfulInput = true;
                             break;
                         case "3":
                             DysplayParkingBalanceInTheLastMinute(parking);
+                            _successfulInput = true;
                             break;
                         case "4":
                             DysplayTransactionInLastMinute(parking);
+                            _successfulInput = true;
                             break;
                         case "5":
+                            _successfulInput = true;
                             break;
                         default:
                             throw new ArgumentException();
@@ -98,32 +104,117 @@ namespace parkingApp
             }
         }
 
-        public string ParkingPickUpTheCarMenu()
+        public void ParkingPickUpTheCarMenu(Parking parking)
         {
             Console.Write(_textLiteParkingPickUpTheCarMenu);
+            while (_successfulInput == false)
+            {
+                try
+                {
+                    _inputString = Console.ReadLine();
+                    switch (_inputString)
+                    {
+                        case "1":
+                            Park(parking);
+                            _successfulInput = true;
+                            break;
+                        case "2":
+                            PickUpTheCar(parking);
+                            _successfulInput = true;
+                            break;
+                        case "3":
+                            ReplanishBalance(parking);
+                            _successfulInput = true;
+                            break;
+                        case "4":
+                            _successfulInput = true;
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                }
+            }
+        }
+
+        private void PickUpTheCar(Parking parking)
+        {
+            Car outgoingCar = FindCar(parking);
+            while (outgoingCar.Balance < 0 || _successfulInput == false)
+            {
+                int requiredAmount = outgoingCar.Balance * -1;
+                Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}",
+                                                                                         outgoingCar.Balance, requiredAmount));
+
+                _successfulInput = ReplanishBalance(parking);
+            }
+        }
+
+        private bool ReplanishBalance(Parking parking)
+        {
+            Car outgoingCar = FindCar(parking);
+            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+            int amount = 0;
+            while (_successfulInput == false)
+            {
+                try
+                {
+                    _inputString = Console.ReadLine();
+                    if (_inputString.ToLower() == "x")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if (!int.TryParse(_inputString, out amount) || amount <= 0)
+                        {
+                            throw new ArgumentException();
+                        }
+                        else
+                        {
+                            outgoingCar.Balance += amount;
+                            _successfulInput = true;
+                        }
+                    }
+
+                }
+                catch (ArgumentException)
+                {
+                    WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
+                }
+            }
+            return _successfulInput;
+        }
+
+        private Car FindCar(Parking parking)
+        {
+            Car outgoingСar = new Car();
             try
             {
-                _inputString = Console.ReadLine();
-                switch (_inputString)
+                while (_successfulInput == false)
+                    Console.Write("Enter your id (enter \"x\" to cancel): ");
+                _inputString = Console.ReadLine().ToLower();
+                if (_inputString == "x")
                 {
-                    case "1":
-                        return "Park";
-                    case "2":
-                        return "PickUpTheCar";
-                    case "3":
-                        return "ReplenishBalance";
-                    case "4":
-                        return "Back";
-                    default:
+                    _successfulInput = true;
+                }
+                else
+                {
+                    outgoingСar = parking.GetCar(_inputString);
+                    if (outgoingСar == null)
+                    {
                         throw new ArgumentException();
+                    }
                 }
             }
             catch (ArgumentException)
             {
-                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
-                return "";
+                WriteMessage(string.Format("Car with id {0} not found, please check the correctness of the input id.", _inputString));
             }
-            return _inputString;
+            return outgoingСar;
         }
 
         public void DysplayTransactionInLastMinute(Parking parking)
@@ -148,11 +239,6 @@ namespace parkingApp
             }
 
             WriteMessage(transactionList);
-        }
-
-        public void ReplenishBalance()
-        {
-
         }
 
         public void DysplayParkingSpace(Parking parking)
@@ -241,7 +327,5 @@ namespace parkingApp
             Console.Write("Press any button to continue...");
             Console.ReadKey();
         }
-
-
     }
 }
