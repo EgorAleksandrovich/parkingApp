@@ -23,7 +23,6 @@ namespace parkingApp
 
         private Parking()
         {
-            Balance = 123; //test value. Need to remove
             _cars = new List<Car>();
             _transactions = new List<Transaction>();
             _parkingSpace = Settings.ParkingSpace;
@@ -50,6 +49,11 @@ namespace parkingApp
         {
             int sum = _transactions.Sum(tr => tr.WriteOffs);
             return sum;
+        }
+
+        public bool CheckForFreePlace()
+        {
+            return _cars != null?true:_cars.Count() < _parkingSpace;
         }
 
         public void ParkTheCar(Car car)
