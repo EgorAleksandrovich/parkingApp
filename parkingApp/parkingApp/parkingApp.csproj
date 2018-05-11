@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IMenu.cs" />
     <Compile Include="Menu\Menu.cs" />
-    <Compile Include="Messages.cs" />
+    <Compile Include="Messages\Messages.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Parking.cs" />
     <Compile Include="Program.cs" />
