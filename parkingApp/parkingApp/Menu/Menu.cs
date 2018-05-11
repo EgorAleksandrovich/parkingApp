@@ -70,9 +70,9 @@ namespace parkingApp
                     case "2":
                         return "DysplayParkingBalance";
                     case "3":
-                        return "GetBalanceInTheLastMinute";
+                        return "DysplayParkingBalanceInTheLastMinute";
                     case "4":
-                        return "DysplayTransactionsInLastMinute";
+                        return "DysplayTransactionInLastMinute";
                     case "5":
                         return "Back";
                     default:
@@ -86,32 +86,52 @@ namespace parkingApp
             }
         }
 
-        public void ParkingPickUpTheCarMenu()
+        public string ParkingPickUpTheCarMenu()
         {
             Console.Write(_textLiteParkingPickUpTheCarMenu);
+            return "";
         }
 
         public void DysplayTransactionInLastMinute(Parking parking)
         {
-            
-            foreach (Transaction transaction in parking.Transactions)
+            string transactionList = "";
+            int count = 1;
+            if (parking.Transactions.Count > 0)
             {
-                Console.Write(string.Format("{0} withdraw from car with id {1}: {2}", transaction.TransactionTime, transaction.CarId, transaction.WriteOffs));
+                int lastTransaction = parking.Transactions.Count();
+                foreach (Transaction transaction in parking.Transactions)
+                {
+                    transactionList += string.Format("{0} withdraw from car with id {1}: {2}g.",
+                        transaction.TransactionTime,
+                        transaction.CarId,
+                        transaction.WriteOffs);
+                    if (count != lastTransaction)
+                    {
+                        transactionList += "\n";
+                    }
+                    count++;
+                }
             }
+
+            WriteMessage(transactionList);
         }
 
         public void DysplayParkingSpace(Parking parking)
         {
             int busyPlace;
             int freePlace;
-            parking.GetParkingSpace( out busyPlace, out freePlace);
+            parking.GetParkingSpace(out busyPlace, out freePlace);
             WriteMessage(string.Format("Available number of places {0}, busy places {1}.", freePlace, busyPlace));
-            Delay();
         }
 
         public void DysplayParkingBalance(Parking parking)
         {
-            WriteMessage(string.Format("The current parking balance is {0}", parking.GetBalance()));
+            WriteMessage(string.Format("The current parking balance is {0}.", parking.GetBalance()));
+        }
+
+        public void DysplayParkingBalanceInTheLastMinute(Parking parking)
+        {
+            WriteMessage(string.Format("The current parking balance in the last minute is {0}.", parking.GetBalanceInTheLastMinute()));
         }
 
         private void WriteMessage(string message)
@@ -119,6 +139,7 @@ namespace parkingApp
             Console.WriteLine(new string('-', 50));
             Console.WriteLine(message);
             Console.WriteLine(new string('-', 50));
+            Delay();
         }
 
         private void Delay()
