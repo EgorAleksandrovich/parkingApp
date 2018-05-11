@@ -23,7 +23,6 @@ namespace parkingApp
         public static Dictionary<CarType, int> ParkingPrice { get { return _parkingPrice; } }
         public static int ParkingSpace { get { return _parkingSpace; } }
         public static int Fine { get { return _fine; } }
-        //public static Timer Timeout { get { return _timeout; } }
         public static int Timeout { get { return _timeout; } }
     }
 }
