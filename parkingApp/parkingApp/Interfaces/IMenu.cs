@@ -8,8 +8,8 @@ namespace parkingApp
 {
     public interface IMenu
     {
-        string StartMenu();
-        string ParkingInfoMenu();
-        string ParkingPickUpTheCarMenu();
+        void StartMenu(Parking parking);
+        void ParkingInfoMenu(Parking parking);
+        void ParkingPickUpTheCarMenu(Parking parking);
     }
 }
