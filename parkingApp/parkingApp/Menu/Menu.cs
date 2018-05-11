@@ -66,24 +66,22 @@ namespace parkingApp
                 switch (_inputString)
                 {
                     case "1":
-                        return "ShowParkingSpace";
+                        return "DysplayParkingSpace";
                     case "2":
-                        return "GetBalance";
+                        return "DysplayParkingBalance";
                     case "3":
                         return "GetBalanceInTheLastMinute";
                     case "4":
-                        return "DysplayTransaction";
+                        return "DysplayTransactionsInLastMinute";
                     case "5":
-                        return "Exit";
+                        return "Back";
                     default:
                         throw new ArgumentException();
                 }
             }
             catch (ArgumentException)
             {
-                Console.WriteLine(new string('-', 50));
-                Console.WriteLine("Entered value " + _inputString + " does not match any particles which were proposed");
-                Console.WriteLine(new string('-', 50));
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
                 return "";
             }
         }
@@ -93,12 +91,41 @@ namespace parkingApp
             Console.Write(_textLiteParkingPickUpTheCarMenu);
         }
 
-        public static void DysplayTransaction(List<Transaction> transactions)
+        public void DysplayTransactionInLastMinute(Parking parking)
         {
-            foreach(Transaction transaction in transactions)
+            
+            foreach (Transaction transaction in parking.Transactions)
             {
-                Console.Write(string.Format("{0} withdraw from car with id {1}: {2}", transaction.TransactionTime, transaction.CarId, transaction.WriteOffs );
+                Console.Write(string.Format("{0} withdraw from car with id {1}: {2}", transaction.TransactionTime, transaction.CarId, transaction.WriteOffs));
             }
         }
+
+        public void DysplayParkingSpace(Parking parking)
+        {
+            int busyPlace;
+            int freePlace;
+            parking.GetParkingSpace( out busyPlace, out freePlace);
+            WriteMessage(string.Format("Available number of places {0}, busy places {1}.", freePlace, busyPlace));
+            Delay();
+        }
+
+        public void DysplayParkingBalance(Parking parking)
+        {
+            WriteMessage(string.Format("The current parking balance is {0}", parking.GetBalance()));
+        }
+
+        private void WriteMessage(string message)
+        {
+            Console.WriteLine(new string('-', 50));
+            Console.WriteLine(message);
+            Console.WriteLine(new string('-', 50));
+        }
+
+        private void Delay()
+        {
+            Console.Write("Press any button to continue...");
+            Console.ReadKey();
+        }
+
     }
 }
