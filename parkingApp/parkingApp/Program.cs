@@ -15,21 +15,55 @@ namespace parkingApp
         {
             _parking = Parking.GetInstance();
             Menu menu = new Menu();
-            string inputString = "";
-            while(inputString != "Exit")
+            string previousUserChoice = null;
+            string currentUsersChoice = "StartMenu";
+            string newUserChoice = "";
+            
+            while (currentUsersChoice != "Exit")
             {
-                inputString = menu.StartMenu();
-                if(inputString != null && inputString != "Exit")
+                newUserChoice = Program.CallMethod(currentUsersChoice, menu);
+                if (newUserChoice == currentUsersChoice)
                 {
-                    while(inputString != "Back")
+                    currentUsersChoice = previousUserChoice;
+                }
+                else
+                {
+                    if (previousUserChoice == null)
                     {
-                        Type thisType = menu.GetType();
-                        MethodInfo theMethod = thisType.GetMethod(inputString);
-                        theMethod.Invoke(menu, null);
+                        previousUserChoice = newUserChoice;
+                    }
+                    currentUsersChoice = newUserChoice;
+                }
+            }
+            Console.ReadKey();
+        }
+        static string CallMethod(string methodName, Menu menu)
+        {
+            string result = methodName;
+            Type thisType = menu.GetType();
+            if (thisType != null)
+            {
+                MethodInfo methodInfo = thisType.GetMethod(methodName);
+
+                if (methodInfo != null)
+                {
+                    ParameterInfo[] parameters = methodInfo.GetParameters();
+                    if (parameters.Length == 0)
+                    {
+                        result = methodInfo.Invoke(menu, null).ToString();
+                    }
+                    else
+                    {
+                        object[] parametersArray = new object[] { _parking };
+                        object obj = methodInfo.Invoke(menu, parametersArray);
+                        if (obj != null)
+                        {
+                            result = obj.ToString();
+                        }
                     }
                 }
-            }            
-            Console.ReadKey();
+            }
+            return result;
         }
     }
 }
