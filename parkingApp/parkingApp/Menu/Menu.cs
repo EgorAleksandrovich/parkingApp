@@ -36,23 +36,22 @@ namespace parkingApp
 
         public void StartMenu(Parking parking)
         {
-            Console.Write(_textLineStartMenu);
-            while (_successfulInput == false)
+            bool exit = false;
+            while (exit == false)
                 try
                 {
+                    Console.Write(_textLineStartMenu);
                     _inputString = Console.ReadLine();
                     switch (_inputString)
                     {
                         case "1":
                             ParkingInfoMenu(parking);
-                            _successfulInput = true;
                             break;
                         case "2":
                             ParkingPickUpTheCarMenu(parking);
-                            _successfulInput = true;
                             break;
                         case "3":
-                            _successfulInput = true;
+                            exit = true;
                             break;
                         default:
                             throw new ArgumentException();
@@ -66,9 +65,11 @@ namespace parkingApp
 
         public void ParkingInfoMenu(Parking parking)
         {
-            Console.Write(_textLineParkingInfoMenu);
-            while (_successfulInput == false)
+            bool canseled = false;
+
+            while (canseled == false)
             {
+                Console.Write(_textLineParkingInfoMenu);
                 try
                 {
                     _inputString = Console.ReadLine();
@@ -76,22 +77,18 @@ namespace parkingApp
                     {
                         case "1":
                             DysplayParkingSpace(parking);
-                            _successfulInput = true;
                             break;
                         case "2":
                             DysplayParkingBalance(parking);
-                            _successfulInput = true;
                             break;
                         case "3":
                             DysplayParkingBalanceInTheLastMinute(parking);
-                            _successfulInput = true;
                             break;
                         case "4":
                             DysplayTransactionInLastMinute(parking);
-                            _successfulInput = true;
                             break;
                         case "5":
-                            _successfulInput = true;
+                            canseled = true;
                             break;
                         default:
                             throw new ArgumentException();
@@ -106,9 +103,10 @@ namespace parkingApp
 
         public void ParkingPickUpTheCarMenu(Parking parking)
         {
-            Console.Write(_textLiteParkingPickUpTheCarMenu);
-            while (_successfulInput == false)
+            bool canseled = false;
+            while (canseled == false)
             {
+                Console.Write(_textLiteParkingPickUpTheCarMenu);
                 try
                 {
                     _inputString = Console.ReadLine();
@@ -116,18 +114,15 @@ namespace parkingApp
                     {
                         case "1":
                             Park(parking);
-                            _successfulInput = true;
                             break;
                         case "2":
                             PickUpTheCar(parking);
-                            _successfulInput = true;
                             break;
                         case "3":
                             ReplanishBalance(parking);
-                            _successfulInput = true;
                             break;
                         case "4":
-                            _successfulInput = true;
+                            canseled = true;
                             break;
                         default:
                             throw new ArgumentException();
@@ -296,6 +291,7 @@ namespace parkingApp
                             default:
                                 throw new ArgumentException();
                         }
+                        parking.ParkTheCar(newCar);
                     }
                     catch (ArgumentException)
                     {
