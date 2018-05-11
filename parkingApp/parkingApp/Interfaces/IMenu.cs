@@ -10,6 +10,6 @@ namespace parkingApp
     {
         string StartMenu();
         string ParkingInfoMenu();
-        void ParkingPickUpTheCarMenu();
+        string ParkingPickUpTheCarMenu();
     }
 }
