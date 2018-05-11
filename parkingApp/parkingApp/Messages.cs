@@ -10,6 +10,7 @@ namespace parkingApp
     {
         private static Dictionary<string, string> _dictionaryMessages = new Dictionary<string, string>
         {
+            {"Greeting","Hello! Welcom to our parking \"Сar under guard\"!"},
             {"StartMenu","(Start menu) Enter number of partition which you want:" +
                          "\n\t\t 1 go to 'Parking info'" +
                          "\n\t\t 2 go to 'Park/Pick up the car'" +
