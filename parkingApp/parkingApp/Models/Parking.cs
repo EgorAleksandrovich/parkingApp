@@ -22,6 +22,7 @@ namespace parkingApp
 
         private Parking()
         {
+            Balance = 123;
             _cars = new List<Car>();
             _transactions = new List<Transaction>();
             _parkingSpace = Settings.ParkingSpace;
@@ -37,6 +38,17 @@ namespace parkingApp
         public static Parking GetInstance()
         {
             return lazy.Value;
+        }
+
+        public int GetBalance()
+        {
+            return Balance;
+        }
+
+        public int GetBalanceInTheLastMinute()
+        {
+            int sum = _transactions.Sum(tr => tr.WriteOffs);
+            return sum;
         }
 
         public void ParkTheCar(Car car)
@@ -133,14 +145,7 @@ namespace parkingApp
 
         public void DysplayTransaction()
         {
-            TableHelper.PrintLine();
-            TableHelper.PrintRow("Transatction time", "Car Id", "Withdraw");
-            TableHelper.PrintLine();
-            foreach (Transaction transaction in _transactions)
-            {
-                TableHelper.PrintRow(transaction.TransactionTime.ToString(), transaction.CarId, Convert.ToString(transaction.WriteOffs));
-            }
-            TableHelper.PrintLine();
+            Menu.DysplayTransaction(_transactions);
         }
     }
 }
