@@ -13,16 +13,20 @@ namespace parkingApp
         private string _textLineParkingInfoMenu;
         private string _textLiteParkingPickUpTheCarMenu;
         private string _textGreeting;
+        private string _textSetCarType;
         private string _inputString;
+        private bool _successfulInput;
 
         public Menu()
         {
+            _successfulInput = false;
             _menuMessageDictionary = new Dictionary<string, string>();
             _menuMessageDictionary = Messages.MenuMessagesDictionary;
             _textLineStartMenu = _menuMessageDictionary["StartMenu"];
             _textLineParkingInfoMenu = _menuMessageDictionary["ParkingInfoMenu"]; ;
             _textLiteParkingPickUpTheCarMenu = _menuMessageDictionary["ParkingPickUpTheCarMenu"];
             _textGreeting = _menuMessageDictionary["Greeting"];
+            _textSetCarType = _menuMessageDictionary["CarType"];
             Greeting();
         }
         private void Greeting()
@@ -30,50 +34,85 @@ namespace parkingApp
             Console.WriteLine(_textGreeting);
         }
 
-        public string StartMenu()
+        public void StartMenu(Parking parking)
         {
             Console.Write(_textLineStartMenu);
+            while (_successfulInput == false & _inputString != "5")
             try
             {
                 _inputString = Console.ReadLine();
                 switch (_inputString)
                 {
                     case "1":
-                        return "ParkingInfoMenu";
+                        ParkingInfoMenu(parking);
+                        _successfulInput = true;
+                        break;
                     case "2":
-                        return "ParkingPickUpTheCarMenu";
+                        ParkingPickUpTheCarMenu();
+                        _successfulInput = true;
+                        break;
                     case "3":
-                        return "Exit";
+                        break;
                     default:
                         throw new ArgumentException();
                 }
             }
             catch (ArgumentException)
             {
-                Console.WriteLine(new string('-', 50));
-                Console.WriteLine("Entered value " + _inputString + " does not match any particles which were proposed");
-                Console.WriteLine(new string('-', 50));
-                return "";
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
             }
         }
 
-        public string ParkingInfoMenu()
+        public void ParkingInfoMenu(Parking parking)
         {
             Console.Write(_textLineParkingInfoMenu);
+            while (_successfulInput == false & _inputString != "5")
+            {
+                try
+                {
+                    _inputString = Console.ReadLine();
+                    switch (_inputString)
+                    {
+                        case "1":
+                            DysplayParkingSpace(parking);
+                            break;
+                        case "2":
+                            DysplayParkingBalance(parking);
+                            break;
+                        case "3":
+                            DysplayParkingBalanceInTheLastMinute(parking);
+                            break;
+                        case "4":
+                            DysplayTransactionInLastMinute(parking);
+                            break;
+                        case "5":
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                }
+            }
+        }
+
+        public string ParkingPickUpTheCarMenu()
+        {
+            Console.Write(_textLiteParkingPickUpTheCarMenu);
             try
             {
                 _inputString = Console.ReadLine();
                 switch (_inputString)
                 {
                     case "1":
-                        return "DysplayParkingSpace";
+                        return "Park";
                     case "2":
-                        return "DysplayParkingBalance";
+                        return "PickUpTheCar";
                     case "3":
-                        return "DysplayParkingBalanceInTheLastMinute";
+                        return "ReplenishBalance";
                     case "4":
-                        return "DysplayTransactionInLastMinute";
-                    case "5":
                         return "Back";
                     default:
                         throw new ArgumentException();
@@ -84,12 +123,7 @@ namespace parkingApp
                 WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
                 return "";
             }
-        }
-
-        public string ParkingPickUpTheCarMenu()
-        {
-            Console.Write(_textLiteParkingPickUpTheCarMenu);
-            return "";
+            return _inputString;
         }
 
         public void DysplayTransactionInLastMinute(Parking parking)
@@ -116,6 +150,11 @@ namespace parkingApp
             WriteMessage(transactionList);
         }
 
+        public void ReplenishBalance()
+        {
+
+        }
+
         public void DysplayParkingSpace(Parking parking)
         {
             int busyPlace;
@@ -134,6 +173,61 @@ namespace parkingApp
             WriteMessage(string.Format("The current parking balance in the last minute is {0}.", parking.GetBalanceInTheLastMinute()));
         }
 
+        public void Park(Parking parking)
+        {
+            Car newCar;
+            bool successfulInput = false;
+            if (parking.CheckForFreePlace())
+            {
+                newCar = new Car();
+                newCar.Id = GenerateId();
+                while (successfulInput == false & _inputString != "5")
+                {
+                    Console.Write(_textSetCarType);
+                    try
+                    {
+                        _inputString = Console.ReadLine();
+                        switch (_inputString)
+                        {
+                            case "1":
+                                newCar.CarType = CarType.Passenger;
+                                successfulInput = true;
+                                break;
+                            case "2":
+                                newCar.CarType = CarType.Bus;
+                                successfulInput = true;
+                                break;
+                            case "3":
+                                newCar.CarType = CarType.Motorcycle;
+                                successfulInput = true;
+                                break;
+                            case "4":
+                                newCar.CarType = CarType.Truck;
+                                successfulInput = true;
+                                break;
+                            case "5":
+                                break;
+                            default:
+                                throw new ArgumentException();
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                    }
+                }
+            }
+        }
+
+        private string GenerateId()
+        {
+            string id;
+            Console.Write("Enter your name:");
+            id = Console.ReadLine();
+            id += Guid.NewGuid().ToString().GetHashCode().ToString("x");
+            return id;
+        }
+
         private void WriteMessage(string message)
         {
             Console.WriteLine(new string('-', 50));
@@ -147,6 +241,7 @@ namespace parkingApp
             Console.Write("Press any button to continue...");
             Console.ReadKey();
         }
+
 
     }
 }
