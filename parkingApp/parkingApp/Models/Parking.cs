@@ -19,10 +19,11 @@ namespace parkingApp
         private Timer _timer;
 
         private int Balance { get; set; }
+        public List<Transaction> Transactions { get { return _transactions; } }
 
         private Parking()
         {
-            Balance = 123;
+            Balance = 123; //test value. Need to remove
             _cars = new List<Car>();
             _transactions = new List<Transaction>();
             _parkingSpace = Settings.ParkingSpace;
@@ -117,10 +118,10 @@ namespace parkingApp
             return cansalesAction;
         }
 
-        public void ShowParkingSpace()
+        public void GetParkingSpace(out int busyPosition, out int freePosition)
         {
-            int freeParkingSpace = _parkingSpace - _cars.Count();
-            Console.WriteLine(string.Format("Available number of space {0}, busy spaces {1}.", freeParkingSpace, _cars.Count()));
+            busyPosition = _cars.Count();
+            freePosition = _parkingSpace - _cars.Count();
         }
 
         private void Withdraw(object sender, ElapsedEventArgs e)
@@ -143,9 +144,5 @@ namespace parkingApp
             }
         }
 
-        public void DysplayTransaction()
-        {
-            Menu.DysplayTransaction(_transactions);
-        }
     }
 }
