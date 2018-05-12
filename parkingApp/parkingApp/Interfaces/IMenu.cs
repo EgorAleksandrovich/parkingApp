@@ -12,7 +12,7 @@ namespace parkingApp
         void ParkingInfoMenu();
         void ParkingPickUpTheCarMenu();
         void PickUpTheCar();
-        bool ReplanishBalance();
+        bool ReplanishCarBalance();
         Car FindCar();
         void DysplayTransactionInLastMinute();
         void DysplayParkingSpace();
