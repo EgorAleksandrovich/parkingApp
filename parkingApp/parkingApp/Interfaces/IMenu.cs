@@ -19,7 +19,5 @@ namespace parkingApp
         void DysplayParkingBalance();
         void DysplayParkingBalanceInTheLastMinute();
         void Park();
-        void Park();
-        
     }
 }

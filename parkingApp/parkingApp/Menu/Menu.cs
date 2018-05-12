@@ -66,7 +66,7 @@ namespace parkingApp
                 }
         }
 
-        private void ParkingInfoMenu()
+        public void ParkingInfoMenu()
         {
             bool canseled = false;
 
@@ -104,7 +104,7 @@ namespace parkingApp
             }
         }
 
-        private void ParkingPickUpTheCarMenu()
+        public void ParkingPickUpTheCarMenu()
         {
             bool canseled = false;
             while (canseled == false)
@@ -138,7 +138,7 @@ namespace parkingApp
             }
         }
 
-        private void PickUpTheCar()
+        public void PickUpTheCar()
         {
             Car outgoingCar = FindCar();
             while (outgoingCar.Balance < 0 || _successfulInput == false)
@@ -151,7 +151,7 @@ namespace parkingApp
             }
         }
 
-        private bool ReplanishBalance()
+        public bool ReplanishBalance()
         {
             Car outgoingCar = FindCar();
             Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
@@ -187,7 +187,7 @@ namespace parkingApp
             return _successfulInput;
         }
 
-        private Car FindCar()
+        public Car FindCar()
         {
             Car outgoingСar = new Car();
             try
@@ -215,7 +215,7 @@ namespace parkingApp
             return outgoingСar;
         }
 
-        private void DysplayTransactionInLastMinute()
+        public void DysplayTransactionInLastMinute()
         {
             string transactionList = "";
             int count = 1;
@@ -239,7 +239,7 @@ namespace parkingApp
             WriteMessage(transactionList);
         }
 
-        private void DysplayParkingSpace()
+        public void DysplayParkingSpace()
         {
             int busyPlace;
             int freePlace;
@@ -247,17 +247,17 @@ namespace parkingApp
             WriteMessage(string.Format("Available number of places {0}, busy places {1}.", freePlace, busyPlace));
         }
 
-        private void DysplayParkingBalance()
+        public void DysplayParkingBalance()
         {
             WriteMessage(string.Format("The current parking balance is {0}.", _parking.GetBalance()));
         }
 
-        private void DysplayParkingBalanceInTheLastMinute()
+        public void DysplayParkingBalanceInTheLastMinute()
         {
             WriteMessage(string.Format("The current parking balance in the last minute is {0}.", _parking.GetBalanceInTheLastMinute()));
         }
 
-        private void Park()
+        public void Park()
         {
             Car newCar;
             bool successfulInput = false;
