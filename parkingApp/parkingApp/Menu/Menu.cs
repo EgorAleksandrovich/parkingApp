@@ -18,7 +18,6 @@ namespace parkingApp
         private bool _successfulInput;
         private Parking _parking;
 
-
         public Menu()
         {
             _parking = Parking.GetInstance();
@@ -92,6 +91,9 @@ namespace parkingApp
                             DysplayTransactionInLastMinute();
                             break;
                         case "5":
+                            DysplayAllTransactions();
+                            break;
+                        case "6":
                             canseled = true;
                             break;
                         default:
@@ -154,36 +156,40 @@ namespace parkingApp
 
         public bool ReplanishCarBalance()
         {
-            Car car = FindCar();
             int amount = 0;
             bool canseled = false;
-            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
-            while (canseled == false)
+            Car car = FindCar();
+            if (car != null)
             {
-                try
+                Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+                while (canseled == false)
                 {
-                    _inputString = Console.ReadLine();
-                    if (_inputString.ToLower() == "x")
+                    try
                     {
-                        canseled = true;
-                    }
-                    else
-                    {
-                        if (!int.TryParse(_inputString, out amount) || amount <= 0)
+                        _inputString = Console.ReadLine();
+                        if (_inputString.ToLower() == "x")
                         {
-                            throw new ArgumentException();
+                            canseled = true;
                         }
                         else
                         {
-                            car.Balance += amount;
+                            if (!int.TryParse(_inputString, out amount) || amount <= 0)
+                            {
+                                throw new ArgumentException();
+                            }
+                            else
+                            {
+                                car.Balance += amount;
+                            }
                         }
-                    }
 
+                    }
+                    catch (ArgumentException)
+                    {
+                        WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
+                    }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
-                }
+
             }
             return canseled;
         }
@@ -194,24 +200,26 @@ namespace parkingApp
             try
             {
                 while (_successfulInput == false)
+                {
                     Console.Write("Enter your id (enter \"x\" to cancel): ");
-                _inputString = Console.ReadLine().ToLower();
-                if (_inputString == "x")
-                {
-                    _successfulInput = true;
-                }
-                else
-                {
-                    outgoingСar = _parking.GetCar(_inputString);
-                    if (outgoingСar == null)
+                    _inputString = Console.ReadLine().ToLower();
+                    if (_inputString == "x")
                     {
-                        throw new ArgumentException();
+                        _successfulInput = true;
+                    }
+                    else
+                    {
+                        outgoingСar = _parking.GetCar(_inputString);
+                        if (outgoingСar == null)
+                        {
+                            throw new ArgumentException();
+                        }
                     }
                 }
             }
             catch (ArgumentException)
             {
-                WriteMessage(string.Format("Car with id {0} not found, please check the correctness of the input id.", _inputString));
+                WriteMessage(string.Format("Car with id \"{0}\" not found, please check the correctness of the input id.", _inputString));
             }
             return outgoingСar;
         }
@@ -281,7 +289,8 @@ namespace parkingApp
         public bool SetCarType(Car car)
         {
             bool canseled = false;
-            while (canseled == false)
+            _successfulInput = false;
+            while (canseled == false & _successfulInput == false)
             {
                 Console.Write(_textSetCarType);
                 try
@@ -291,15 +300,19 @@ namespace parkingApp
                     {
                         case "1":
                             car.CarType = CarType.Bus;
+                            _successfulInput = true;
                             break;
                         case "2":
                             car.CarType = CarType.Truck;
+                            _successfulInput = true;
                             break;
                         case "3":
                             car.CarType = CarType.Motorcycle;
+                            _successfulInput = true;
                             break;
                         case "4":
                             car.CarType = CarType.Passenger;
+                            _successfulInput = true;
                             break;
                         case "5":
                             canseled = true;
@@ -323,6 +336,23 @@ namespace parkingApp
             id = Console.ReadLine();
             id += Guid.NewGuid().ToString().GetHashCode().ToString("x");
             return id;
+        }
+
+        public void DysplayAllTransactions()
+        {
+            string[] lines =  _parking.RetriveTransactionData();
+            if(lines == null)
+            {
+                Console.WriteLine("No transction yet!");
+            }
+            else
+            {
+                foreach (string line in lines)
+                {
+                    Console.WriteLine("\t" + line);
+                }
+            }
+            
         }
 
         private void WriteMessage(string message)
