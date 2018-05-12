@@ -20,6 +20,7 @@ namespace parkingApp
         private int _timeoutOneMinute;
         private Timer _timer;
         private Timer _timerOneMinute;
+        private string _logFilePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
 
         private int Balance { get; set; }
         public List<Transaction> Transactions { get { return _transactions; } }
@@ -114,9 +115,7 @@ namespace parkingApp
 
         private void ExportTransaction(object sender, ElapsedEventArgs e)
         {
-            string filePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
-
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+            using (StreamWriter writer = new StreamWriter(_logFilePath, true))
             {
                 if (Transactions.Count() > 0)
                 {
@@ -129,8 +128,14 @@ namespace parkingApp
                             transaction.WriteOffs));
                     }
                     writer.WriteLine(Environment.NewLine + new string('-', 50) + Environment.NewLine);
+                    Transactions.Clear();
                 }
             }
+        }
+
+        public string[] RetriveTransactionData()
+        {
+            return System.IO.File.ReadAllLines(_logFilePath);
         }
 
         public Car GetCar(string id)
