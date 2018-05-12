@@ -20,7 +20,6 @@ namespace parkingApp
         private int _timeoutOneMinute;
         private Timer _timer;
         private Timer _timerOneMinute;
-        //private string _logFilePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
         private string _logFilePath;
 
 

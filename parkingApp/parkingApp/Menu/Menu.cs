@@ -15,7 +15,6 @@ namespace parkingApp
         private string _textGreeting;
         private string _textSetCarType;
         private string _inputString;
-        private bool _successfulInput;
         private Parking _parking;
 
         public Menu()
