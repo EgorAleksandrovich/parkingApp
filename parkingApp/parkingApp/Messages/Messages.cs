@@ -20,7 +20,8 @@ namespace parkingApp
                                 "\n\t\t 2 show  'Parking balance(total)'" +
                                 "\n\t\t 3 show  'Parking balance(in the last minute)'" +
                                 "\n\t\t 4 show  'Transactions(in the last minute)'" +
-                                "\n\t\t 5 go    'Back'"+"\n>"},
+                                "\n\t\t 5 show  'Transactions for all period'" +
+                                "\n\t\t 6 go    'Back'"+"\n>"},
             {"ParkingPickUpTheCarMenu", "(Park/Pick up the car menu) Enter number of action which you want:" +
                                         "\n\t\t 1 'Park'" +
                                         "\n\t\t 2 'Pick up the car'" +
