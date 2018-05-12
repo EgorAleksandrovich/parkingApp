@@ -33,9 +33,11 @@ namespace parkingApp
         static private string GetCarTypeMessage()
         {
             string result = "(Car type) Enter number of car type :";
-            foreach(CarType carType in Enum.GetValues(typeof(CarType)))
+            int count = 1;
+            foreach (CarType carType in Enum.GetValues(typeof(CarType)))
             {
-                result+= "\n\t\t 1 " + carType;
+                result += "\n\t\t " + count + carType;
+                count++;
             }
             result += "\n>";
             return result;
