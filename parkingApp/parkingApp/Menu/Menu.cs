@@ -32,6 +32,7 @@ namespace parkingApp
             _textSetCarType = _menuMessageDictionary["CarType"];
             Greeting();
         }
+
         private void Greeting()
         {
             Console.WriteLine(_textGreeting);
@@ -122,7 +123,7 @@ namespace parkingApp
                             PickUpTheCar();
                             break;
                         case "3":
-                            ReplanishBalance();
+                            ReplanishCarBalance();
                             break;
                         case "4":
                             canseled = true;
@@ -147,23 +148,24 @@ namespace parkingApp
                 Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}",
                                                                                          outgoingCar.Balance, requiredAmount));
 
-                _successfulInput = ReplanishBalance();
+                _successfulInput = ReplanishCarBalance();
             }
         }
 
-        public bool ReplanishBalance()
+        public bool ReplanishCarBalance()
         {
-            Car outgoingCar = FindCar();
-            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+            Car car = FindCar();
             int amount = 0;
-            while (_successfulInput == false)
+            bool canseled = false;
+            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+            while (canseled == false)
             {
                 try
                 {
                     _inputString = Console.ReadLine();
                     if (_inputString.ToLower() == "x")
                     {
-                        break;
+                        canseled = true;
                     }
                     else
                     {
@@ -173,8 +175,7 @@ namespace parkingApp
                         }
                         else
                         {
-                            outgoingCar.Balance += amount;
-                            _successfulInput = true;
+                            car.Balance += amount;
                         }
                     }
 
@@ -184,7 +185,7 @@ namespace parkingApp
                     WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
                 }
             }
-            return _successfulInput;
+            return canseled;
         }
 
         public Car FindCar()
@@ -260,48 +261,59 @@ namespace parkingApp
         public void Park()
         {
             Car newCar;
-            bool successfulInput = false;
+            bool canseled = false;
             if (_parking.CheckForFreePlace())
             {
                 newCar = new Car();
                 newCar.Id = GenerateId();
-                while (successfulInput == false & _inputString != "5")
+                canseled = SetCarType(newCar);
+                if (!canseled)
                 {
-                    Console.Write(_textSetCarType);
-                    try
+                    canseled = ReplanishCarBalance();
+                    if (!canseled)
                     {
-                        _inputString = Console.ReadLine();
-                        switch (_inputString)
-                        {
-                            case "1":
-                                newCar.CarType = CarType.Passenger;
-                                successfulInput = true;
-                                break;
-                            case "2":
-                                newCar.CarType = CarType.Bus;
-                                successfulInput = true;
-                                break;
-                            case "3":
-                                newCar.CarType = CarType.Motorcycle;
-                                successfulInput = true;
-                                break;
-                            case "4":
-                                newCar.CarType = CarType.Truck;
-                                successfulInput = true;
-                                break;
-                            case "5":
-                                break;
-                            default:
-                                throw new ArgumentException();
-                        }
                         _parking.ParkTheCar(newCar);
-                    }
-                    catch (ArgumentException)
-                    {
-                        WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
                     }
                 }
             }
+        }
+
+        public bool SetCarType(Car car)
+        {
+            bool canseled = false;
+            while (canseled == false)
+            {
+                Console.Write(_textSetCarType);
+                try
+                {
+                    _inputString = Console.ReadLine();
+                    switch (_inputString)
+                    {
+                        case "1":
+                            car.CarType = CarType.Bus;
+                            break;
+                        case "2":
+                            car.CarType = CarType.Truck;
+                            break;
+                        case "3":
+                            car.CarType = CarType.Motorcycle;
+                            break;
+                        case "4":
+                            car.CarType = CarType.Passenger;
+                            break;
+                        case "5":
+                            canseled = true;
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                }
+            }
+            return canseled;
         }
 
         private string GenerateId()
