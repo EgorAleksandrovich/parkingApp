@@ -20,7 +20,9 @@ namespace parkingApp
         private int _timeoutOneMinute;
         private Timer _timer;
         private Timer _timerOneMinute;
-        private string _logFilePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
+        //private string _logFilePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
+        private string _logFilePath;
+
 
         private int Balance { get; set; }
         public List<Transaction> Transactions { get { return _transactions; } }
@@ -32,6 +34,7 @@ namespace parkingApp
             _parkingSpace = Settings.ParkingSpace;
             _fine = Settings.Fine;
             _parkingPrice = Settings.ParkingPrice;
+            _logFilePath = Settings.LogFilePath;
 
             _timeout = Settings.Timeout;
             _timer = new Timer();
