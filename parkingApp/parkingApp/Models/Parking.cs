@@ -42,7 +42,7 @@ namespace parkingApp
 
         public int GetBalance()
         {
-            return this.Balance;
+            return Balance;
         }
 
         public int GetBalanceInTheLastMinute()
@@ -53,7 +53,7 @@ namespace parkingApp
 
         public bool CheckForFreePlace()
         {
-            return _cars != null?true:_cars.Count() < _parkingSpace;
+            return _cars != null ? true : _cars.Count() < _parkingSpace;
         }
 
         public void ParkTheCar(Car car)
@@ -66,7 +66,7 @@ namespace parkingApp
 
         public void PickUpTheCar(Car outgoingCar)
         {
-            if(outgoingCar != null)
+            if (outgoingCar != null)
             {
                 _cars.Remove(outgoingCar);
             }
@@ -92,9 +92,12 @@ namespace parkingApp
                     }
                     car.Balance -= amount;
                     Balance += amount;
-                    _transactions.Add(new Transaction { CarId = car.Id, 
-                        TransactionTime = DateTime.Now, 
-                        WriteOffs = _parkingPrice[car.CarType] });
+                    _transactions.Add(new Transaction
+                    {
+                        CarId = car.Id,
+                        TransactionTime = DateTime.Now,
+                        WriteOffs = _parkingPrice[car.CarType]
+                    });
                 }
             }
         }
@@ -103,6 +106,5 @@ namespace parkingApp
         {
             return _cars.FirstOrDefault(c => c.Id == id);
         }
-
     }
 }
