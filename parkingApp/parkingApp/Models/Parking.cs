@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,9 @@ namespace parkingApp
         private int _fine;
         private Dictionary<CarType, int> _parkingPrice;
         private int _timeout;
+        private int _timeoutOneMinute;
         private Timer _timer;
+        private Timer _timerOneMinute;
 
         private int Balance { get; set; }
         public List<Transaction> Transactions { get { return _transactions; } }
@@ -28,11 +31,18 @@ namespace parkingApp
             _parkingSpace = Settings.ParkingSpace;
             _fine = Settings.Fine;
             _parkingPrice = Settings.ParkingPrice;
+
             _timeout = Settings.Timeout;
             _timer = new Timer();
             _timer.Interval = _timeout;
             _timer.Enabled = true;
             _timer.Elapsed += Withdraw;
+
+            _timeoutOneMinute = Settings.TimeoutOneMinute;
+            _timerOneMinute = new Timer();
+            _timerOneMinute.Interval = _timeoutOneMinute;
+            _timerOneMinute.Enabled = true;
+            _timerOneMinute.Elapsed += ExportTransaction;
         }
 
         public static Parking GetInstance()
@@ -98,6 +108,27 @@ namespace parkingApp
                         TransactionTime = DateTime.Now,
                         WriteOffs = _parkingPrice[car.CarType]
                     });
+                }
+            }
+        }
+
+        private void ExportTransaction(object sender, ElapsedEventArgs e)
+        {
+            string filePath = @"C:\Users\User\Documents\Transaction\Transaction.log";
+
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                if (Transactions.Count() > 0)
+                {
+                    writer.WriteLine("Date :" + DateTime.Now.ToString() + "" + Environment.NewLine);
+                    foreach (Transaction transaction in _transactions)
+                    {
+                        writer.WriteLine(string.Format("{0} withdraw from car with id {1}: {2}g.",
+                            transaction.TransactionTime,
+                            transaction.CarId,
+                            transaction.WriteOffs));
+                    }
+                    writer.WriteLine(Environment.NewLine + new string('-', 50) + Environment.NewLine);
                 }
             }
         }
