@@ -14,7 +14,6 @@ namespace parkingApp
         {
             Menu menu = new Menu();
             menu.StartMenu();
-            Console.ReadKey();
         }
     }
 }

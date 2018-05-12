@@ -42,7 +42,7 @@ namespace parkingApp
 
         public int GetBalance()
         {
-            return Balance;
+            return this.Balance;
         }
 
         public int GetBalanceInTheLastMinute()
@@ -91,6 +91,7 @@ namespace parkingApp
                         amount *= _fine;
                     }
                     car.Balance -= amount;
+                    Balance += amount;
                     _transactions.Add(new Transaction { CarId = car.Id, 
                         TransactionTime = DateTime.Now, 
                         WriteOffs = _parkingPrice[car.CarType] });
