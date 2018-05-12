@@ -26,13 +26,19 @@ namespace parkingApp
                                         "\n\t\t 2 'Pick up the car'" +
                                         "\n\t\t 3 'Replenish balance'" +
                                         "\n\t\t 4 'Back'"+"\n>"},
-            {"CarType", "(Car type) Enter number of car type :" +
-                                        "\n\t\t 1 'Passenger'" +
-                                        "\n\t\t 2 'Bus'" +
-                                        "\n\t\t 3 'Motorcycle'" +
-                                        "\n\t\t 4 'Truck'" +
-                                        "\n\t\t 5 'Back'"+"\n>"}
+            {"CarType", GetCarTypeMessage()}
         };
         public static Dictionary<string, string> MenuMessagesDictionary { get { return _dictionaryMessages; } }
+
+        static private string GetCarTypeMessage()
+        {
+            string result = "(Car type) Enter number of car type :";
+            foreach(CarType carType in Enum.GetValues(typeof(CarType)))
+            {
+                result+= "\n\t\t 1 " + carType;
+            }
+            result += "\n>";
+            return result;
+        }
     }
 }
