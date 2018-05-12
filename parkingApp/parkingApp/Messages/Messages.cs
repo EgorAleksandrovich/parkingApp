@@ -36,7 +36,7 @@ namespace parkingApp
             int count = 1;
             foreach (CarType carType in Enum.GetValues(typeof(CarType)))
             {
-                result += "\n\t\t " + count + carType;
+                result += "\n\t\t " + count +" "+ carType;
                 count++;
             }
             result += "\n>";
