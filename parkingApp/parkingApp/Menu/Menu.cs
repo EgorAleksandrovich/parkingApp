@@ -43,6 +43,7 @@ namespace parkingApp
             while (exit == false)
                 try
                 {
+                    Console.Clear();
                     Console.Write(_textLineStartMenu);
                     _inputString = Console.ReadLine();
                     switch (_inputString)
@@ -72,6 +73,7 @@ namespace parkingApp
 
             while (canseled == false)
             {
+                Console.Clear();
                 Console.Write(_textLineParkingInfoMenu);
                 try
                 {
@@ -112,6 +114,7 @@ namespace parkingApp
             bool canseled = false;
             while (canseled == false)
             {
+                Console.Clear();
                 Console.Write(_textLiteParkingPickUpTheCarMenu);
                 try
                 {
@@ -154,58 +157,73 @@ namespace parkingApp
             }
         }
 
+        public bool ReplanishCarBalance(Car car)
+        {
+            bool result =  Replanish(car);
+            if(result!=false)
+            {
+                WriteMessage("Car has been parked!");
+            }
+            return result;
+        }
+
         public bool ReplanishCarBalance()
+        {
+            Car car = FindCar();
+            return car == null ? true : Replanish(car);
+        }
+
+        public bool Replanish(Car car)
         {
             int amount = 0;
             bool canseled = false;
-            Car car = FindCar();
-            if (car != null)
+            Console.Clear();
+            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+            while (canseled == false)
             {
-                Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
-                while (canseled == false)
+                try
                 {
-                    try
+                    _inputString = Console.ReadLine();
+                    if (_inputString.ToLower() == "x")
                     {
-                        _inputString = Console.ReadLine();
-                        if (_inputString.ToLower() == "x")
+                        canseled = true;
+                    }
+                    else
+                    {
+                        if (!int.TryParse(_inputString, out amount) || amount <= 0)
                         {
-                            canseled = true;
+                            throw new ArgumentException();
                         }
                         else
                         {
-                            if (!int.TryParse(_inputString, out amount) || amount <= 0)
-                            {
-                                throw new ArgumentException();
-                            }
-                            else
-                            {
-                                car.Balance += amount;
-                            }
+                            car.Balance += amount;
+                            WriteMessage(string.Format("Balance have been successful replenish for the amount of {0}!", amount));
+                            break;
                         }
-
-                    }
-                    catch (ArgumentException)
-                    {
-                        WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
                     }
                 }
-
+                catch (ArgumentException)
+                {
+                    WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
+                }
             }
             return canseled;
         }
 
         public Car FindCar()
         {
+            bool canseled = false;
             Car outgoingСar = new Car();
-            try
+            while (canseled == false)
             {
-                while (_successfulInput == false)
+                try
                 {
+                    Console.Clear();
                     Console.Write("Enter your id (enter \"x\" to cancel): ");
                     _inputString = Console.ReadLine().ToLower();
                     if (_inputString == "x")
                     {
-                        _successfulInput = true;
+                        canseled = true;
                     }
                     else
                     {
@@ -214,12 +232,16 @@ namespace parkingApp
                         {
                             throw new ArgumentException();
                         }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-            }
-            catch (ArgumentException)
-            {
-                WriteMessage(string.Format("Car with id \"{0}\" not found, please check the correctness of the input id.", _inputString));
+                catch (ArgumentException)
+                {
+                    WriteMessage(string.Format("Car with id \"{0}\" not found, please check the correctness of the input id.", _inputString));
+                }
             }
             return outgoingСar;
         }
@@ -244,7 +266,10 @@ namespace parkingApp
                     count++;
                 }
             }
-
+            else
+            {
+                transactionList = "No transction yet!";
+            }
             WriteMessage(transactionList);
         }
 
@@ -277,7 +302,7 @@ namespace parkingApp
                 canseled = SetCarType(newCar);
                 if (!canseled)
                 {
-                    canseled = ReplanishCarBalance();
+                    canseled = ReplanishCarBalance(newCar);
                     if (!canseled)
                     {
                         _parking.ParkTheCar(newCar);
@@ -340,19 +365,20 @@ namespace parkingApp
 
         public void DysplayAllTransactions()
         {
-            string[] lines =  _parking.RetriveTransactionData();
-            if(lines == null)
+            string result = "";
+            string[] lines = _parking.RetriveTransactionData();
+            if (lines.Length == 0)
             {
-                Console.WriteLine("No transction yet!");
+                result = "No transction yet!";
             }
             else
             {
                 foreach (string line in lines)
                 {
-                    Console.WriteLine("\t" + line);
+                    result += "\n" + line;
                 }
             }
-            
+            WriteMessage(result);
         }
 
         private void WriteMessage(string message)

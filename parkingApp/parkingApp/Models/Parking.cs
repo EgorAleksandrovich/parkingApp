@@ -138,6 +138,11 @@ namespace parkingApp
             return System.IO.File.ReadAllLines(_logFilePath);
         }
 
+        public bool ConteinsCar(string id)
+        {
+            return _cars.Any(car => car.Id == id);
+        }
+
         public Car GetCar(string id)
         {
             return _cars.FirstOrDefault(c => c.Id == id);
