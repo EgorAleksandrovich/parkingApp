@@ -39,9 +39,9 @@ namespace parkingApp
 
         public void StartMenu()
         {
-            bool exit = false;
-            while (exit == false)
-                try
+            try
+            {
+                while (_inputString != "3")
                 {
                     Console.Clear();
                     Console.Write(_textLineStartMenu);
@@ -55,28 +55,27 @@ namespace parkingApp
                             ParkingPickUpTheCarMenu();
                             break;
                         case "3":
-                            exit = true;
                             break;
                         default:
                             throw new ArgumentException();
                     }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
-                }
+            }
+            catch (ArgumentException)
+            {
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                this.StartMenu();
+            }
         }
 
         public void ParkingInfoMenu()
         {
-            bool canseled = false;
-
-            while (canseled == false)
+            try
             {
-                Console.Clear();
-                Console.Write(_textLineParkingInfoMenu);
-                try
+                while (_inputString != "6")
                 {
+                    Console.Clear();
+                    Console.Write(_textLineParkingInfoMenu);
                     _inputString = Console.ReadLine();
                     switch (_inputString)
                     {
@@ -96,28 +95,28 @@ namespace parkingApp
                             DysplayAllTransactions();
                             break;
                         case "6":
-                            canseled = true;
                             break;
                         default:
                             throw new ArgumentException();
                     }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
-                }
+            }
+            catch (ArgumentException)
+            {
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                this.StartMenu();
+
             }
         }
 
         public void ParkingPickUpTheCarMenu()
         {
-            bool canseled = false;
-            while (canseled == false)
+            try
             {
-                Console.Clear();
-                Console.Write(_textLiteParkingPickUpTheCarMenu);
-                try
+                while (_inputString != "4")
                 {
+                    Console.Clear();
+                    Console.Write(_textLiteParkingPickUpTheCarMenu);
                     _inputString = Console.ReadLine();
                     switch (_inputString)
                     {
@@ -131,119 +130,127 @@ namespace parkingApp
                             ReplanishCarBalance();
                             break;
                         case "4":
-                            canseled = true;
                             break;
                         default:
                             throw new ArgumentException();
                     }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
-                }
+            }
+            catch (ArgumentException)
+            {
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                this.ParkingPickUpTheCarMenu();
             }
         }
 
         public void PickUpTheCar()
         {
             Car outgoingCar = FindCar();
-            while (outgoingCar.Balance < 0 || _successfulInput == false)
+            int amount = 0;
+            if (outgoingCar != null)
             {
-                int requiredAmount = outgoingCar.Balance * -1;
-                Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}",
-                                                                                         outgoingCar.Balance, requiredAmount));
-
-                _successfulInput = ReplanishCarBalance();
+                while (outgoingCar.Balance < 1)
+                {
+                    int requiredAmount = outgoingCar.Balance * -1;
+                    WriteMessage(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}", outgoingCar.Balance, requiredAmount));
+                    amount = ReplanishCarBalance(outgoingCar);
+                    if (amount == 0)
+                    {
+                        WriteMessage("Operation canceled!");
+                        break;
+                    }
+                }
+                if(amount != 0)
+                {
+                    _parking.PickUpTheCar(outgoingCar);
+                    WriteMessage("The car left, goodbye!");
+                }
             }
         }
 
-        public bool ReplanishCarBalance(Car car)
+        public int ReplanishCarBalance(Car car)
         {
-            bool result =  Replanish(car);
-            if(result!=false)
+            int amount = 0;
+            Replanish(car, out amount);
+            if (amount > 0)
             {
                 WriteMessage("Car has been parked!");
             }
-            return result;
+            return amount;
         }
 
-        public bool ReplanishCarBalance()
-        {
-            Car car = FindCar();
-            return car == null ? true : Replanish(car);
-        }
-
-        public bool Replanish(Car car)
+        public int ReplanishCarBalance()
         {
             int amount = 0;
-            bool canseled = false;
-            Console.Clear();
-            Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
-            while (canseled == false)
+            Car car = FindCar();
+            Replanish(car, out amount);
+            return amount;
+        }
+
+        public void Replanish(Car car, out int amount)
+        {
+            amount = 0;
+            try
             {
-                try
+                Console.Clear();
+                Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
+                _inputString = Console.ReadLine();
+                if (_inputString.ToLower() == "x")
                 {
-                    _inputString = Console.ReadLine();
-                    if (_inputString.ToLower() == "x")
+                    return;
+                }
+                else
+                {
+                    if (!int.TryParse(_inputString, out amount) || amount <= 0)
                     {
-                        canseled = true;
+                        throw new ArgumentException();
                     }
                     else
                     {
-                        if (!int.TryParse(_inputString, out amount) || amount <= 0)
-                        {
-                            throw new ArgumentException();
-                        }
-                        else
-                        {
-                            car.Balance += amount;
-                            WriteMessage(string.Format("Balance have been successful replenish for the amount of {0}!", amount));
-                            break;
-                        }
+                        car.Balance += amount;
+                        WriteMessage(string.Format("Balance have been successful replenish for the amount of {0}!", amount));
                     }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
-                }
+
             }
-            return canseled;
+            catch (ArgumentException)
+            {
+                WriteMessage("Error! Invalid input. The text you enter must be an integer value greater than 0");
+                Replanish(car, out amount);
+            }
         }
 
         public Car FindCar()
         {
-            bool canseled = false;
             Car outgoingСar = new Car();
-            while (canseled == false)
+            try
             {
-                try
+                Console.Clear();
+                Console.Write("Enter your id (enter \"x\" to cancel): ");
+                _inputString = Console.ReadLine().ToLower();
+                if (_inputString == "x")
                 {
-                    Console.Clear();
-                    Console.Write("Enter your id (enter \"x\" to cancel): ");
-                    _inputString = Console.ReadLine().ToLower();
-                    if (_inputString == "x")
+                    return null;
+                }
+                else
+                {
+                    outgoingСar = _parking.GetCar(_inputString);
+                    if (outgoingСar != null)
                     {
-                        canseled = true;
+                        return outgoingСar;
                     }
                     else
                     {
-                        outgoingСar = _parking.GetCar(_inputString);
-                        if (outgoingСar == null)
-                        {
-                            throw new ArgumentException();
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        throw new ArgumentException();
                     }
                 }
-                catch (ArgumentException)
-                {
-                    WriteMessage(string.Format("Car with id \"{0}\" not found, please check the correctness of the input id.", _inputString));
-                }
             }
-            return outgoingСar;
+            catch (ArgumentException)
+            {
+                WriteMessage(string.Format("Car with id \"{0}\" not found, please check the correctness of the input id.", _inputString));
+
+            }
+            return null;
         }
 
         public void DysplayTransactionInLastMinute()
@@ -294,64 +301,52 @@ namespace parkingApp
         public void Park()
         {
             Car newCar;
-            bool canseled = false;
             if (_parking.CheckForFreePlace())
             {
+                int amount = 0;
                 newCar = new Car();
                 newCar.Id = GenerateId();
-                canseled = SetCarType(newCar);
-                if (!canseled)
+                SetCarType(newCar);
+                amount = ReplanishCarBalance(newCar);
+                if (amount > 0)
                 {
-                    canseled = ReplanishCarBalance(newCar);
-                    if (!canseled)
-                    {
-                        _parking.ParkTheCar(newCar);
-                    }
+                    _parking.ParkTheCar(newCar);
                 }
             }
         }
 
-        public bool SetCarType(Car car)
+        public void SetCarType(Car car)
         {
-            bool canseled = false;
-            _successfulInput = false;
-            while (canseled == false & _successfulInput == false)
+            try
             {
+                Console.Clear();
                 Console.Write(_textSetCarType);
-                try
+                _inputString = Console.ReadLine();
+                switch (_inputString)
                 {
-                    _inputString = Console.ReadLine();
-                    switch (_inputString)
-                    {
-                        case "1":
-                            car.CarType = CarType.Bus;
-                            _successfulInput = true;
-                            break;
-                        case "2":
-                            car.CarType = CarType.Truck;
-                            _successfulInput = true;
-                            break;
-                        case "3":
-                            car.CarType = CarType.Motorcycle;
-                            _successfulInput = true;
-                            break;
-                        case "4":
-                            car.CarType = CarType.Passenger;
-                            _successfulInput = true;
-                            break;
-                        case "5":
-                            canseled = true;
-                            break;
-                        default:
-                            throw new ArgumentException();
-                    }
-                }
-                catch (ArgumentException)
-                {
-                    WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                    case "1":
+                        car.CarType = CarType.Bus;
+                        break;
+                    case "2":
+                        car.CarType = CarType.Truck;
+                        break;
+                    case "3":
+                        car.CarType = CarType.Motorcycle;
+                        break;
+                    case "4":
+                        car.CarType = CarType.Passenger;
+                        break;
+                    case "5":
+                        break;
+                    default:
+                        throw new ArgumentException();
                 }
             }
-            return canseled;
+            catch (ArgumentException)
+            {
+                WriteMessage("Entered value " + _inputString + " does not match any particles which were proposed");
+                SetCarType(car);
+            }
         }
 
         private string GenerateId()
