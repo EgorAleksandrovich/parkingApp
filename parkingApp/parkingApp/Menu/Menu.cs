@@ -16,9 +16,12 @@ namespace parkingApp
         private string _textSetCarType;
         private string _inputString;
         private bool _successfulInput;
+        private Parking _parking;
+
 
         public Menu()
         {
+            _parking = Parking.GetInstance();
             _successfulInput = false;
             _menuMessageDictionary = new Dictionary<string, string>();
             _menuMessageDictionary = Messages.MenuMessagesDictionary;
@@ -34,7 +37,7 @@ namespace parkingApp
             Console.WriteLine(_textGreeting);
         }
 
-        public void StartMenu(Parking parking)
+        public void StartMenu()
         {
             bool exit = false;
             while (exit == false)
@@ -45,10 +48,10 @@ namespace parkingApp
                     switch (_inputString)
                     {
                         case "1":
-                            ParkingInfoMenu(parking);
+                            ParkingInfoMenu();
                             break;
                         case "2":
-                            ParkingPickUpTheCarMenu(parking);
+                            ParkingPickUpTheCarMenu();
                             break;
                         case "3":
                             exit = true;
@@ -63,7 +66,7 @@ namespace parkingApp
                 }
         }
 
-        public void ParkingInfoMenu(Parking parking)
+        private void ParkingInfoMenu()
         {
             bool canseled = false;
 
@@ -76,16 +79,16 @@ namespace parkingApp
                     switch (_inputString)
                     {
                         case "1":
-                            DysplayParkingSpace(parking);
+                            DysplayParkingSpace();
                             break;
                         case "2":
-                            DysplayParkingBalance(parking);
+                            DysplayParkingBalance();
                             break;
                         case "3":
-                            DysplayParkingBalanceInTheLastMinute(parking);
+                            DysplayParkingBalanceInTheLastMinute();
                             break;
                         case "4":
-                            DysplayTransactionInLastMinute(parking);
+                            DysplayTransactionInLastMinute();
                             break;
                         case "5":
                             canseled = true;
@@ -101,7 +104,7 @@ namespace parkingApp
             }
         }
 
-        public void ParkingPickUpTheCarMenu(Parking parking)
+        private void ParkingPickUpTheCarMenu()
         {
             bool canseled = false;
             while (canseled == false)
@@ -113,13 +116,13 @@ namespace parkingApp
                     switch (_inputString)
                     {
                         case "1":
-                            Park(parking);
+                            Park();
                             break;
                         case "2":
-                            PickUpTheCar(parking);
+                            PickUpTheCar();
                             break;
                         case "3":
-                            ReplanishBalance(parking);
+                            ReplanishBalance();
                             break;
                         case "4":
                             canseled = true;
@@ -135,22 +138,22 @@ namespace parkingApp
             }
         }
 
-        private void PickUpTheCar(Parking parking)
+        private void PickUpTheCar()
         {
-            Car outgoingCar = FindCar(parking);
+            Car outgoingCar = FindCar();
             while (outgoingCar.Balance < 0 || _successfulInput == false)
             {
                 int requiredAmount = outgoingCar.Balance * -1;
                 Console.WriteLine(string.Format("In your account {0}, to pick up the car replenish the account not less than {1}",
                                                                                          outgoingCar.Balance, requiredAmount));
 
-                _successfulInput = ReplanishBalance(parking);
+                _successfulInput = ReplanishBalance();
             }
         }
 
-        private bool ReplanishBalance(Parking parking)
+        private bool ReplanishBalance()
         {
-            Car outgoingCar = FindCar(parking);
+            Car outgoingCar = FindCar();
             Console.Write("Enter amount to replenish (enter \"x\" to cancel): ");
             int amount = 0;
             while (_successfulInput == false)
@@ -184,7 +187,7 @@ namespace parkingApp
             return _successfulInput;
         }
 
-        private Car FindCar(Parking parking)
+        private Car FindCar()
         {
             Car outgoingСar = new Car();
             try
@@ -198,7 +201,7 @@ namespace parkingApp
                 }
                 else
                 {
-                    outgoingСar = parking.GetCar(_inputString);
+                    outgoingСar = _parking.GetCar(_inputString);
                     if (outgoingСar == null)
                     {
                         throw new ArgumentException();
@@ -212,14 +215,14 @@ namespace parkingApp
             return outgoingСar;
         }
 
-        public void DysplayTransactionInLastMinute(Parking parking)
+        private void DysplayTransactionInLastMinute()
         {
             string transactionList = "";
             int count = 1;
-            if (parking.Transactions.Count > 0)
+            if (_parking.Transactions.Count > 0)
             {
-                int lastTransaction = parking.Transactions.Count();
-                foreach (Transaction transaction in parking.Transactions)
+                int lastTransaction = _parking.Transactions.Count();
+                foreach (Transaction transaction in _parking.Transactions)
                 {
                     transactionList += string.Format("{0} withdraw from car with id {1}: {2}g.",
                         transaction.TransactionTime,
@@ -236,29 +239,29 @@ namespace parkingApp
             WriteMessage(transactionList);
         }
 
-        public void DysplayParkingSpace(Parking parking)
+        private void DysplayParkingSpace()
         {
             int busyPlace;
             int freePlace;
-            parking.GetParkingSpace(out busyPlace, out freePlace);
+            _parking.GetParkingSpace(out busyPlace, out freePlace);
             WriteMessage(string.Format("Available number of places {0}, busy places {1}.", freePlace, busyPlace));
         }
 
-        public void DysplayParkingBalance(Parking parking)
+        private void DysplayParkingBalance()
         {
-            WriteMessage(string.Format("The current parking balance is {0}.", parking.GetBalance()));
+            WriteMessage(string.Format("The current parking balance is {0}.", _parking.GetBalance()));
         }
 
-        public void DysplayParkingBalanceInTheLastMinute(Parking parking)
+        private void DysplayParkingBalanceInTheLastMinute()
         {
-            WriteMessage(string.Format("The current parking balance in the last minute is {0}.", parking.GetBalanceInTheLastMinute()));
+            WriteMessage(string.Format("The current parking balance in the last minute is {0}.", _parking.GetBalanceInTheLastMinute()));
         }
 
-        public void Park(Parking parking)
+        private void Park()
         {
             Car newCar;
             bool successfulInput = false;
-            if (parking.CheckForFreePlace())
+            if (_parking.CheckForFreePlace())
             {
                 newCar = new Car();
                 newCar.Id = GenerateId();
@@ -291,7 +294,7 @@ namespace parkingApp
                             default:
                                 throw new ArgumentException();
                         }
-                        parking.ParkTheCar(newCar);
+                        _parking.ParkTheCar(newCar);
                     }
                     catch (ArgumentException)
                     {

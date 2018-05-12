@@ -12,10 +12,8 @@ namespace parkingApp
     {
         static void Main(string[] args)
         {
-            Parking _parking;
-            _parking = Parking.GetInstance();
             Menu menu = new Menu();
-            menu.StartMenu(_parking);
+            menu.StartMenu();
             Console.ReadKey();
         }
     }
