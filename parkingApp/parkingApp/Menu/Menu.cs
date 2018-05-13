@@ -154,14 +154,11 @@ namespace parkingApp
                     if (amount == 0)
                     {
                         WriteMessage("Operation canceled!");
-                        break;
+                        return;
                     }
                 }
-                if (amount != 0)
-                {
-                    _parking.PickUpTheCar(outgoingCar);
-                    WriteMessage("The car left, goodbye!");
-                }
+                _parking.PickUpTheCar(outgoingCar);
+                WriteMessage("The car left, goodbye!");
             }
         }
 
