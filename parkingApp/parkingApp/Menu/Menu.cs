@@ -20,7 +20,6 @@ namespace parkingApp
         public Menu()
         {
             _parking = Parking.GetInstance();
-            _successfulInput = false;
             _menuMessageDictionary = new Dictionary<string, string>();
             _menuMessageDictionary = Messages.MenuMessagesDictionary;
             _textLineStartMenu = _menuMessageDictionary["StartMenu"];
