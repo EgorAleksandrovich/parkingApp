@@ -71,8 +71,10 @@ namespace parkingApp
 
         public void ParkTheCar(Car car)
         {
+            string carId = string.Empty;
             if (!(car == null) && _cars.Count() <= _parkingSpace)
             {
+                carId += Guid.NewGuid().ToString().GetHashCode().ToString("x");
                 _cars.Add(car);
             }
         }
